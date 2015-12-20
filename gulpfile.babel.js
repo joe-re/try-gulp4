@@ -44,6 +44,10 @@ gulp.task('tree', (cb) => {
 
 gulp.task('make:symlink', () =>
   gulp.src('./src/test.js').
-    pipe(gulp.symlink('dist', { dirMode: 0o777 }))
+    pipe(gulp.symlink('dist', { dirMode: 0o711 }))
 );
 
+gulp.task('task:order', () =>
+  gulp.src([ './src/*.js', '!./src/b*.js', './src/bad.js' ]).
+    pipe(gulp.dest('dist'))
+);
