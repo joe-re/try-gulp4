@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const customTask = require('./custom_registory.babel.js');
+const debug = require('gulp-debug');
 
 gulp.registry(customTask);
 
@@ -50,4 +51,20 @@ gulp.task('make:symlink', () =>
 gulp.task('task:order', () =>
   gulp.src([ './src/*.js', '!./src/b*.js', './src/bad.js' ]).
     pipe(gulp.dest('dist'))
+);
+
+gulp.task('task:incrementalbuild', () =>
+  gulp.src('./src/*.js', { since: gulp.lastRun('task:incrementalbuild'), followSymlinks: false }).
+    pipe(debug()).
+    pipe(gulp.dest('dist'))
+);
+
+gulp.task('watch', () =>
+  gulp.watch('./src/*.js', gulp.series('task:incrementalbuild'))
+);
+
+gulp.task('task:cantoverwrite', () =>
+  gulp.src('./src/*.js', { followSymlinks: false }).
+    pipe(debug()).
+    pipe(gulp.dest('dist', { overwrite: false }))
 );
